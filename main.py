@@ -8,10 +8,12 @@ app = FastAPI()
 """
 TODO:
 - Dockerize app
-- Setup in mem db
-- Store receipt w point & gen ID (& retrieve receipt)
+- [Simple dict in mem takes care of this req] Setup in mem db
+- [See above] Store receipt w point & gen ID (& retrieve receipt)
 - Add unit tests for all cases
 """
+
+db = {}
 
 class Item(BaseModel):
     shortDescription: str
@@ -56,7 +58,7 @@ def process_receipt(receipt: Receipt):
     if (hours == 14 and mins > 0) or hours == 15:
         points += 10
     # 6 points if the day is odd number
-    day = (receipt.purchaseDate.split("-")[2])
+    day = int(receipt.purchaseDate.split("-")[2])
     if day % 2 == 1:
         points += 6
     # If the trimmed len of item desc is a multiple of 3, multiply the
@@ -64,9 +66,11 @@ def process_receipt(receipt: Receipt):
     for item in receipt.items:
         if len(item.shortDescription)%3 == 0:
             points += math.ceil(len(item.shortDescription)*0.2)
+    db[len(db)] = points
     return {"Points": points}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/receipt")
+def read_item():
+    print(db)
+    return {}
