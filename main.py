@@ -5,7 +5,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI()
-
+"""
+TODO:
+- Dockerize app
+- Setup in mem db
+- Store receipt w point & gen ID (& retrieve receipt)
+- Add unit tests for all cases
+"""
 
 class Item(BaseModel):
     shortDescription: str
@@ -19,12 +25,14 @@ class Receipt(BaseModel):
     items: List[Item]
     total: str
 
+
 # Returns a value from 0 to 99
 def get_cents(price: str) -> int:
     cents = price.split(".")[0]
     if cents == "":
         return 0
     return int(cents)
+
 
 @app.post("/receipts/process")
 def process_receipt(receipt: Receipt):
