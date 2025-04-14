@@ -9,6 +9,7 @@ def test_calculate_points_returns_int(make_receipt):
     result = calculate_points(make_receipt())
     assert isinstance(result, int)
 
+
 @pytest.mark.parametrize(
     "overrides, expected_points",
     [
@@ -26,9 +27,12 @@ def test_calculate_points_returns_int(make_receipt):
         ]}, 2),
     ]
 )
+
+
 def test_calculate_points_with_overrides(make_receipt, overrides, expected_points):
     receipt = make_receipt(**overrides)
     assert calculate_points(receipt) == expected_points
+
 
 def test_process_receipt_inserts_into_db(make_receipt):
     receipt = make_receipt()
@@ -38,8 +42,10 @@ def test_process_receipt_inserts_into_db(make_receipt):
     assert mock_db.get(receipt_id) == 0
     assert mock_db.get(receipt_id) == calculate_points(receipt)
 
+
 def test_get_points_returns_int():
     assert isinstance(get_points(0), int)
+
 
 def test_get_points_raises_exception_when_receipt_not_found():
     with pytest.raises(KeyError):

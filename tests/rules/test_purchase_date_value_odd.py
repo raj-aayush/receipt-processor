@@ -12,7 +12,7 @@ def test_purchase_date_value_odd_returns_int():
     [
         ("2024-10-01", 6),  # Odd day
         ("2024-10-02", 0),  # Even day
-        ("2024-11-02", 6),  # Odd month
+        ("2024-11-02", 0),  # Odd month
         ("2025-10-02", 0),  # Odd year
     ]
 )
