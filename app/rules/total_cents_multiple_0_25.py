@@ -1,4 +1,4 @@
-from utils import get_cents
+from .utils import get_cents
 
 # 25 points if the total is a multiple of 0.25
 def total_cents_multiple_0_25(total: str) -> int:

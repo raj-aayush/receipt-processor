@@ -1,4 +1,4 @@
-from utils import get_cents
+from .utils import get_cents
 
 # 50 points if total is round
 def total_is_whole_number(total: str) -> int:

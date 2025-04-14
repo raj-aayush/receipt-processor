@@ -1,5 +1,5 @@
 from .point_every_two_items import point_every_two_items
-from .alphanum_in_retailer import alphanum_chars_in_retailer
+from .alphanum_chars_in_retailer import alphanum_chars_in_retailer
 from .total_is_whole_number import total_is_whole_number
 from .total_cents_multiple_0_25 import total_cents_multiple_0_25
 from .item_desc_len_multiple_of_3 import item_desc_len_multiple_of_3
