@@ -9,8 +9,10 @@ def insert(val: int) -> int:
 
 
 def exists(id: int) -> bool:
-    return id >= 0 and id < len(db)
+    return 0 <= id < len(db)
 
 
 def get(id: int) -> int:
+    if not exists(id):
+        raise KeyError("Receipt with ID {id} not found")
     return db[id]

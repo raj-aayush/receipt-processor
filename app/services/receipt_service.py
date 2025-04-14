@@ -11,11 +11,6 @@ from app.schemas.receipt import Receipt
 from app.db import mock_db
 
 
-def process_receipt(receipt: Receipt) -> int:
-    points = calculate_points(receipt)
-    return mock_db.insert(points)
-
-
 def calculate_points(receipt: Receipt) -> int:
     points = 0
     points += alphanum_chars_in_retailer(receipt.retailer)
@@ -27,3 +22,11 @@ def calculate_points(receipt: Receipt) -> int:
     for item in receipt.items:
         points += item_desc_len_multiple_of_3(item.shortDescription, item.price)
     return points
+
+
+def process_receipt(receipt: Receipt) -> int:
+    points = calculate_points(receipt)
+    return mock_db.insert(points)
+
+def get_points(id: int) -> int:
+    return mock_db.get(id)

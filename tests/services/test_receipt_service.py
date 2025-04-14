@@ -1,45 +1,46 @@
 import pytest
 
 from app.schemas.receipt import Item
-from app.services.receipt_service import calculate_points
+from app.services.receipt_service import calculate_points,  process_receipt, get_points
+from app.db import mock_db
 
 
-def test_calculate_points_returns_int(default_receipt):
-    result = calculate_points(default_receipt)
+def test_calculate_points_returns_int(make_receipt):
+    result = calculate_points(make_receipt())
     assert isinstance(result, int)
 
-
-def test_calculate_points_returns_zero_when_default_receipt(default_receipt):
-    result = calculate_points(default_receipt)
-    assert result == 0
-
-
-def test_calculate_points_returns_six_when_retailer_is_target(default_receipt):
-    default_receipt.retailer = "Target"
-    result = calculate_points(default_receipt)
-    assert result == 6
-
-
-def test_calculate_points_returns_75_when_total_is_100(default_receipt):
-    default_receipt.total = "100"
-    result = calculate_points(default_receipt)
-    assert result == 75
-
-
-def test_calculate_points_returns_2_when_4_items(default_receipt):
-    default_receipt.items = [
-        Item(shortDescription="item1", price="1.00"),
-        Item(shortDescription="item2", price="1.00"),
-        Item(shortDescription="item3", price="1.00"),
-        Item(shortDescription="item4", price="1.00"),
+@pytest.mark.parametrize(
+    "overrides, expected_points",
+    [
+        ({}, 0),  # default
+        ({"retailer": "Target"}, 6),
+        ({"total": "100"}, 75),
+        ({"items": [
+            Item(shortDescription="item1", price="1.00"),
+            Item(shortDescription="item2", price="1.00"),
+            Item(shortDescription="item3", price="1.00"),
+            Item(shortDescription="item4", price="1.00"),
+        ]}, 10),
+        ({"items": [
+            Item(shortDescription="ite", price="10.00")
+        ]}, 2),
     ]
-    result = calculate_points(default_receipt)
-    assert result == 10
+)
+def test_calculate_points_with_overrides(make_receipt, overrides, expected_points):
+    receipt = make_receipt(**overrides)
+    assert calculate_points(receipt) == expected_points
 
+def test_process_receipt_inserts_into_db(make_receipt):
+    receipt = make_receipt()
+    receipt_id = process_receipt(receipt)
+    assert receipt_id == 0
+    assert mock_db.exists(receipt_id) is True
+    assert mock_db.get(receipt_id) == 0
+    assert mock_db.get(receipt_id) == calculate_points(receipt)
 
-def test_calculate_points_returns_2(default_receipt):
-    default_receipt.items = [
-        Item(shortDescription="ite", price="10.00"),
-    ]
-    result = calculate_points(default_receipt)
-    assert result == 2
+def test_get_points_returns_int():
+    assert isinstance(get_points(0), int)
+
+def test_get_points_raises_exception_when_receipt_not_found():
+    with pytest.raises(KeyError):
+        get_points(99999)
