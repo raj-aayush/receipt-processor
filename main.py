@@ -1,19 +1,19 @@
 import math
-from typing import Union, List
+from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
 """
 TODO:
 - Dockerize app
-- [Simple dict in mem takes care of this req] Setup in mem db
-- [See above] Store receipt w point & gen ID (& retrieve receipt)
+- Add db interface file
 - Add unit tests for all cases
 """
 
 db = {}
+
 
 class Item(BaseModel):
     shortDescription: str
@@ -67,10 +67,11 @@ def process_receipt(receipt: Receipt):
         if len(item.shortDescription)%3 == 0:
             points += math.ceil(len(item.shortDescription)*0.2)
     db[len(db)] = points
-    return {"Points": points}
+    return len(db) - 1
 
 
-@app.get("/receipt")
-def read_item():
-    print(db)
-    return {}
+@app.get("/receipts/{id}/points")
+def read_item(id: int):
+    if id > len(db):
+        raise HTTPException(status_code=400, detail="Receipt not found")
+    return db[id]
