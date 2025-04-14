@@ -1,31 +1,7 @@
 import math
-from typing import List
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-
-app = FastAPI()
-"""
-TODO:
-- Dockerize app
-- Add db interface file
-- Add unit tests for all cases
-"""
-
-db = {}
-
-
-class Item(BaseModel):
-    shortDescription: str
-    price: str
-
-
-class Receipt(BaseModel):
-    retailer: str
-    purchaseDate: str
-    purchaseTime: str
-    items: List[Item]
-    total: str
+from app.schemas.receipt import Receipt
+from app.db import mock_db
 
 
 # Returns a value from 0 to 99
@@ -36,8 +12,8 @@ def get_cents(price: str) -> int:
     return int(cents)
 
 
-@app.post("/receipts/process")
-def process_receipt(receipt: Receipt):
+def calculate_receipt_points(receipt: Receipt) -> int:
+
     # 1 point per alphanum char in retailer name
     points = 0
     for ch in receipt.retailer:
@@ -66,12 +42,4 @@ def process_receipt(receipt: Receipt):
     for item in receipt.items:
         if len(item.shortDescription)%3 == 0:
             points += math.ceil(len(item.shortDescription)*0.2)
-    db[len(db)] = points
-    return len(db) - 1
-
-
-@app.get("/receipts/{id}/points")
-def read_item(id: int):
-    if id > len(db):
-        raise HTTPException(status_code=400, detail="Receipt not found")
-    return db[id]
+    return mock_db.insert(points)
