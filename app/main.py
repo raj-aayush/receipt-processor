@@ -13,7 +13,7 @@ TODO:
 
 @app.post("/receipts/process")
 def process_receipt(receipt: Receipt):
-    points = receipt_service.calculate_receipt_points(receipt)
+    points = receipt_service.calculate_points(receipt)
     return {"id": points}
 
 
