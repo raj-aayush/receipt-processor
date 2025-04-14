@@ -1,7 +1,7 @@
 import pytest
 
 from app.schemas.receipt import Item
-from app.services.receipt_service import calculate_points,  process_receipt, get_points
+from app.services.receipt_service import calculate_points, process_receipt, get_points
 from app.db import mock_db
 
 
@@ -27,8 +27,6 @@ def test_calculate_points_returns_int(make_receipt):
         ]}, 2),
     ]
 )
-
-
 def test_calculate_points_with_overrides(make_receipt, overrides, expected_points):
     receipt = make_receipt(**overrides)
     assert calculate_points(receipt) == expected_points
@@ -37,7 +35,7 @@ def test_calculate_points_with_overrides(make_receipt, overrides, expected_point
 def test_process_receipt_inserts_into_db(make_receipt):
     receipt = make_receipt()
     receipt_id = process_receipt(receipt)
-    assert receipt_id == 0
+    assert receipt_id == len(mock_db.db) - 1
     assert mock_db.exists(receipt_id) is True
     assert mock_db.get(receipt_id) == 0
     assert mock_db.get(receipt_id) == calculate_points(receipt)

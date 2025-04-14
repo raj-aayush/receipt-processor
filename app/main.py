@@ -7,7 +7,6 @@ app = FastAPI()
 """
 TODO:
 - Dockerize app
-- Add unit tests for all cases
 """
 
 
