@@ -10,6 +10,12 @@ from app.rules import (
 from app.schemas.receipt import Receipt
 from app.db import mock_db
 
+
+def process_receipt(receipt: Receipt) -> int:
+    points = calculate_points(receipt)
+    return mock_db.insert(points)
+
+
 def calculate_points(receipt: Receipt) -> int:
     points = 0
     points += alphanum_chars_in_retailer(receipt.retailer)
@@ -18,6 +24,6 @@ def calculate_points(receipt: Receipt) -> int:
     points += purchase_after_2pm_before_4pm(receipt.purchaseTime)
     points += purchase_date_value_odd(receipt.purchaseDate)
     points += point_every_two_items(receipt.items)
-    for (short_description, price) in receipt.items:
-        points += item_desc_len_multiple_of_3(short_description, price)
-    return mock_db.insert(points)
+    for item in receipt.items:
+        points += item_desc_len_multiple_of_3(item.shortDescription, item.price)
+    return points
