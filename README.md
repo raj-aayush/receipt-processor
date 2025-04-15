@@ -22,7 +22,7 @@ The API provides two endpoints:
 
 ---
 
-## 🚀 How to Run the App with Docker
+## To run the app
 
 1. Make sure Docker is installed.
 2. From the project root, run:
@@ -48,7 +48,8 @@ http://localhost:8000/docs
 app/
    main.py      # route definitions
    schemas/     # Pydantic models - Receipt & Item
-   services/    # Business logic and rule processing
+   services/    # Business logic
+   rules/       # Rules store
    db/          # In-memory mock DB interface
 tests/
    integration/ # Integration tests to verify endpoint behavior
