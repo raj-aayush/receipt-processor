@@ -56,3 +56,16 @@ tests/
    rules/       # Unit tests
    services/    # Unit tests
 ```
+
+## Assumptions:
+#### Note: I made these assumption due to ambiguity in project description
+1. Empty item descriptions are allowed and treated as length 0 (which is divisible by 3). Therefore, an item with an empty or whitespace-only `shortDescription` will trigger the "length is a multiple of 3" rule and award points accordingly
+2. `purchaseTime` must be in the 24-hour format (`HH:MM`)
+   - Unsupported format: 12-hour format (`HH:MM AM`)
+
+3. `purchaseDate` must be in the `YYYY-MM-DD` format
+   - Unsupported format: Non-ISO date formats (`MM/DD/YYYY` or `DD-MM-YYYY`)
+
+4. Price (`Item.price` & `receipt.total`) must be valid numeric strings
+   - Acceptable formats: whole numbers (`"20"`), decimal numbers (`"3.99"`)
+   - Unsupported format: non-English format (`"3,99"`) is not supported
