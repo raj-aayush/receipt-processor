@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-app
+    ports:
+      - "8000:80"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./app:/src/app
+    restart: unless-stopped

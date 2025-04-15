@@ -4,10 +4,6 @@ from app.services import receipt_service
 from app.db import mock_db
 
 app = FastAPI()
-"""
-TODO:
-- Dockerize app
-"""
 
 
 @app.post("/receipts/process")
